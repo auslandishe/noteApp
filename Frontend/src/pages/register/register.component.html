@@ -1,0 +1,82 @@
+<!-- Main container for the registration page, with a soft, inviting background -->
+<div class="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-cyan-50 p-6 flex items-center justify-center">
+
+    <!-- Registration Card Container -->
+    <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10 w-full max-w-md space-y-8 transform transition-all duration-300 hover:shadow-2xl">
+        <!-- Header for the Registration Section -->
+        <h1 class="text-5xl font-extrabold text-gray-800 text-center tracking-tight leading-tight">
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-teal-600">註冊</span>
+        </h1>
+        <!-- Subtle horizontal rule -->
+        <hr class="border-t-2 border-transparent bg-gradient-to-r from-green-300 via-teal-300 to-cyan-300 rounded-full my-6">
+
+        <!-- Registration Form -->
+        <form (ngSubmit)="onRegister()" class="space-y-6">
+            <div>
+                <label for="username" class="block text-lg font-semibold text-gray-700 mb-2">帳號或電子郵件</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    [(ngModel)]="username"
+                    required
+                    class="w-full p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300 focus:border-green-500 transition-all duration-200 text-lg text-gray-800 placeholder-gray-400"
+                    placeholder="請輸入您的帳號或電子郵件"
+                />
+            </div>
+
+            <div>
+                <label for="password" class="block text-lg font-semibold text-gray-700 mb-2">密碼</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    [(ngModel)]="password"
+                    required
+                    class="w-full p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300 focus:border-green-500 transition-all duration-200 text-lg text-gray-800 placeholder-gray-400"
+                    placeholder="請輸入您的密碼"
+                />
+            </div>
+
+            <div>
+                <label for="confirmPassword" class="block text-lg font-semibold text-gray-700 mb-2">確認密碼</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    [(ngModel)]="confirmPassword"
+                    required
+                    class="w-full p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300 focus:border-green-500 transition-all duration-200 text-lg text-gray-800 placeholder-gray-400"
+                    placeholder="請再次輸入您的密碼"
+                />
+            </div>
+
+            <!-- Register Button -->
+            <button
+                type="submit"
+                class="w-full bg-gradient-to-r from-green-600 to-teal-700 text-white
+                       font-bold py-4 px-6 rounded-lg shadow-lg
+                       text-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl
+                       focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-75
+                       active:scale-95 active:shadow-md"
+            >
+                註冊
+            </button>
+        </form>
+
+        <!-- Back to Login Link -->
+        <div class="text-center text-gray-600 space-y-2 mt-6">
+            <p>已經有帳號了？ <a [routerLink]="['/login']" class="text-blue-600 hover:text-blue-800 transition-colors duration-200 text-base font-medium">立即登入</a></p>
+        </div>
+
+        <!-- Message Modal -->
+        <div *ngIf="isModalVisible" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full text-center space-y-4">
+                <p class="text-xl font-semibold text-gray-800">{{ modalMessage }}</p>
+                <button (click)="closeModal()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                    確定
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

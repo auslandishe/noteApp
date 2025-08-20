@@ -1,0 +1,163 @@
+<div
+  class="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-3xl space-y-8 transform transition-all duration-300 hover:scale-[1.005]"
+  >
+    <!-- Page Title -->
+    <h1
+      class="text-4xl font-extrabold text-gray-900 text-center tracking-tight"
+    >
+      {{ diaryId ? "編輯文章" : "發布新文章" }}
+    </h1>
+
+    <!-- Article Title Input -->
+    <div>
+      <label
+        for="post-title"
+        class="block text-lg font-semibold text-gray-700 mb-2"
+        >文章標題</label
+      >
+      <input
+        type="text"
+        id="post-title"
+        class="w-full p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200 text-lg text-gray-800 placeholder-gray-400"
+        placeholder="請輸入文章標題..."
+        maxlength="100"
+        [(ngModel)]="postTitle"
+        (input)="onTitleInput()"
+      />
+      <p class="text-sm text-gray-500 mt-1 text-right">
+        <span>{{ titleCharCount }}</span
+        >/100 字
+      </p>
+    </div>
+
+    <!-- Article Content Editor -->
+    <div>
+      <label
+        for="post-content"
+        class="block text-lg font-semibold text-gray-700 mb-2"
+        >文章內容</label
+      >
+      <textarea
+        id="post-content"
+        class="w-full h-80 p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200 text-lg text-gray-800 placeholder-gray-400 resize-y min-h-[250px]"
+        placeholder="開始撰寫您的文章內容..."
+        [(ngModel)]="postContent"
+        (input)="onContentInput()"
+      ></textarea>
+      <p class="text-sm text-gray-500 mt-1 text-right">
+        <span>{{ contentCharCount }}</span> 字
+      </p>
+    </div>
+
+    <!-- Tags Section -->
+    <div>
+      <label class="block text-lg font-semibold text-gray-700 mb-2">標籤</label>
+
+      <!-- Display Selected Tags -->
+      <div *ngIf="selectedTags.length > 0" class="flex flex-wrap gap-2 mb-4">
+        <div
+          *ngFor="let tag of selectedTags"
+          [ngClass]="getTagColor(tag)"
+          class="flex items-center px-4 py-2 rounded-full text-white text-sm font-medium shadow-md transition-all duration-200 ease-in-out transform hover:scale-105"
+        >
+          {{ tag }}
+          <button
+            (click)="removeTag(tag)"
+            class="ml-2 text-white hover:text-gray-100 focus:outline-none"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing Tags -->
+      <div class="mb-4">
+        <p class="text-md font-medium text-gray-600 mb-2">選擇既有標籤:</p>
+        <!-- 沒有標籤時顯示提示 -->
+        <div *ngIf="availableTags.length === 0" class="text-gray-400 italic">
+          新增一個標籤吧
+        </div>
+        <!-- 有標籤時才顯示按鈕們 -->
+        <div *ngIf="availableTags.length > 0" class="flex flex-wrap gap-2">
+          <button
+            *ngFor="let tag of availableTags"
+            (click)="addExistingTag(tag.name)"
+            [disabled]="selectedTags.includes(tag.name)"
+            class="px-4 py-2 rounded-full border border-blue-400 text-blue-700 text-sm font-medium hover:bg-blue-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+          >
+            {{ tag.name }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom Tag Input -->
+      <div class="flex items-center gap-2">
+        <input
+          type="text"
+          id="custom-tag-input"
+          class="flex-grow p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200 text-lg text-gray-800 placeholder-gray-400"
+          placeholder="輸入自訂標籤..."
+          [(ngModel)]="customTagInput"
+          (keyup.enter)="addCustomTag()"
+        />
+        <button
+          (click)="addCustomTag()"
+          [disabled]="!customTagInput.trim()"
+          class="px-6 py-4 bg-purple-500 text-white rounded-lg font-semibold text-lg hover:bg-purple-600 transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          新增
+        </button>
+      </div>
+    </div>
+
+    <!-- Publish Buttons -->
+    <div class="flex justify-end space-x-4">
+      <button
+        (click)="cancelPost()"
+        class="px-8 py-4 bg-gray-200 text-gray-800 rounded-lg font-semibold text-lg hover:bg-gray-300 transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+      >
+        取消
+      </button>
+      <button
+        (click)="publishArticle()"
+        class="px-8 py-4 bg-purple-600 text-white rounded-lg font-semibold text-lg hover:bg-purple-700 transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-75"
+      >
+        {{ diaryId ? "儲存變更" : "發布文章" }}
+      </button>
+    </div>
+
+    <!-- Message Modal (using *ngIf for conditional rendering) -->
+    <div
+      *ngIf="isModalVisible"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full text-center space-y-4"
+      >
+        <p class="text-xl font-semibold text-gray-800">{{ modalMessage }}</p>
+        <button
+          (click)="closeModal()"
+          class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+        >
+          確定
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
