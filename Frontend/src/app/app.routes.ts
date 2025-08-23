@@ -20,7 +20,7 @@ export const routes: Routes = [
   { path: 'diary', component: DiaryComponent, canActivate: [AuthGuard] },
 
   // 新增或編輯日記文章（帶 id）
-  { path: 'diary/post/:id', component: DiaryPostComponent, canActivate: [AuthGuard] },
+  { path: 'diary/post', component: DiaryPostComponent, canActivate: [AuthGuard] },
 
   // 查看日記文章細節（用 id 查文章）
   { path: 'diary/:id', component: DiaryDetailComponent, canActivate: [AuthGuard] },
